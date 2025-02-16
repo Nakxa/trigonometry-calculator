@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigonometry Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f0f2f5;
+            padding: 20px;
+        }
+
+        .calculator {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            background: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .results {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .result-item {
+            margin-bottom: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .unit-toggle {
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .unit-toggle button {
+            background: #6c757d;
+            margin: 0 5px;
+        }
+
+        .unit-toggle button.active {
+            background: #28a745;
+        }
+
+        @media (max-width: 480px) {
+            .buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Trigonometry Calculator</h1>
+        
+        <div class="unit-toggle">
+            <button id="degrees" class="active">Degrees</button>
+            <button id="radians">Radians</button>
+        </div>
+
+        <div class="input-group">
+            <label for="angle">Enter Angle:</label>
+            <input type="number" id="angle" step="any" placeholder="Enter angle">
+        </div>
+
+        <div class="buttons">
+            <button onclick="calculate('sin')">Sine</button>
+            <button onclick="calculate('cos')">Cosine</button>
+            <button onclick="calculate('tan')">Tangent</button>
+            <button onclick="calculate('asin')">Arc Sine</button>
+            <button onclick="calculate('acos')">Arc Cosine</button>
+            <button onclick="calculate('atan')">Arc Tangent</button>
+            <button onclick="calculate('sinh')">Sinh</button>
+            <button onclick="calculate('cosh')">Cosh</button>
+            <button onclick="calculate('tanh')">Tanh</button>
+        </div>
+
+        <div class="results" id="results">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        let isRadians = false;
+        const degToRad = angle => angle * Math.PI / 180;
+        const radToDeg = angle => angle * 180 / Math.PI;
+
+        // Toggle between degrees and radians
+        document.getElementById('degrees').addEventListener('click', () => {
+            isRadians = false;
+            document.getElementById('degrees').classList.add('active');
+            document.getElementById('radians').classList.remove('active');
+        });
+
+        document.getElementById('radians').addEventListener('click', () => {
+            isRadians = true;
+            document.getElementById('radians').classList.add('active');
+            document.getElementById('degrees').classList.remove('active');
+        });
+
+        function calculate(operation) {
+            const angleInput = document.getElementById('angle').value;
+            if (!angleInput) {
+                alert('Please enter an angle');
+                return;
+            }
+
+            let angle = parseFloat(angleInput);
+            let result;
+            let angleInRad = isRadians ? angle : degToRad(angle);
+            let originalAngle = angle;
+
+            switch(operation) {
+                case 'sin':
+                    result = Math.sin(angleInRad);
+                    break;
+                case 'cos':
+                    result = Math.cos(angleInRad);
+                    break;
+                case 'tan':
+                    result = Math.tan(angleInRad);
+                    break;
+                case 'asin':
+                    result = Math.asin(angle);
+                    result = isRadians ? result : radToDeg(result);
+                    break;
+                case 'acos':
+                    result = Math.acos(angle);
+                    result = isRadians ? result : radToDeg(result);
+                    break;
+                case 'atan':
+                    result = Math.atan(angle);
+                    result = isRadians ? result : radToDeg(result);
+                    break;
+                case 'sinh':
+                    result = Math.sinh(angleInRad);
+                    break;
+                case 'cosh':
+                    result = Math.cosh(angleInRad);
+                    break;
+                case 'tanh':
+                    result = Math.tanh(angleInRad);
+                    break;
+            }
+
+            displayResult(operation, originalAngle, result);
+        }
+
+        function displayResult(operation, angle, result) {
+            const resultsDiv = document.getElementById('results');
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            
+            const unit = isRadians ? 'rad' : 'deg';
+            const formattedResult = Math.abs(result) < 0.000001 ? result.toExponential(6) : result.toFixed(6);
+            
+            resultItem.innerHTML = `
+                ${operation}(${angle}${unit}) = ${formattedResult}
+            `;
+
+            resultsDiv.insertBefore(resultItem, resultsDiv.firstChild);
+
+            // Keep only the last 5 results
+            while (resultsDiv.children.length > 5) {
+                resultsDiv.removeChild(resultsDiv.lastChild);
+            }
+        }
+    </script>
+</body>
+</html>

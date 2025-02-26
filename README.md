@@ -2,7 +2,7 @@
 
 A modern, user-friendly web-based trigonometry calculator built with HTML, CSS, and JavaScript. This calculator provides comprehensive trigonometric calculations with support for both degrees and radians.
 
-![Trigonometry Calculator Screenshot](https://placeholder-image.jpg)
+![Trigonometry Calculator Screenshot](image.png)
 
 ## Features
 
